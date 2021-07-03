@@ -19,10 +19,10 @@ const addNotehandler = (request, h) => {
 
   if (isSuccess) {
     const response = h.response({
-      status: 'Success',
-      message: 'Catatan berhasil ditambahakan',
+      status: 'success',
+      message: 'catatan berhasil ditambahkan',
       data: {
-        noteID: id
+        noteId: id
       }
     });
     response.code(201);
@@ -39,12 +39,14 @@ const addNotehandler = (request, h) => {
 };
 
 // READ
-const getAllNotesHandler = () => ({
-  status: 'success',
-  data: {
-    notes
+const getAllNotesHandler = () => (
+  {
+    status: 'success',
+    data: {
+      notes
+    }
   }
-});
+);
 
 const getNoteByIdHandler = (request, h) => {
   const { id } = request.params;
@@ -54,11 +56,20 @@ const getNoteByIdHandler = (request, h) => {
   if (note !== undefined) {
     return {
       status: 'success',
+      message: 'catatan berhasil ditemukan',
       data: {
         note
       }
-    }
+    };
   };
+
+  const response = h.response({
+    status: 'fail',
+    message: 'catatan gagal ditemukan'
+  });
+
+  response.code(404);
+  return response;
 };
 
 // UPDATE
@@ -71,7 +82,7 @@ const editNoteByIdHandler = (request, h) => {
 
   const index = notes.findIndex((note) => note.id === id);
 
-  if (index >= 0) {
+  if (index !== -1) {
     notes[index] = {
       ...notes[index],
       title,
@@ -81,7 +92,7 @@ const editNoteByIdHandler = (request, h) => {
     };
 
     const response = h.response({
-      ststus: 'success',
+      status: 'success',
       message: 'Catatan berhasil diperbarui'
     });
     response.code(200);
@@ -90,10 +101,10 @@ const editNoteByIdHandler = (request, h) => {
 
   const response = h.response({
     status: 'fail',
-    message: 'Cacatan gagal diperbarui, id tidak ditemukan'
+    message: 'Catatan gagal diperbarui, id tidak ditemukan'
   });
   response.code(404);
-  return response
+  return response;
 };
 
 const deleteNoteByIdHandler = (request, h) => {
@@ -103,7 +114,6 @@ const deleteNoteByIdHandler = (request, h) => {
 
   if (index !== -1) {
     notes.splice(index, 1);
-
     const response = h.response({
       status: 'success',
       message: 'Catatan berhasil dihapus'
